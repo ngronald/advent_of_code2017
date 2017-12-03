@@ -12,7 +12,5 @@ sum {x:"I"$"\t" vs x;max[x]-min[x]} each read0 `:input/day2.txt
 / Q2
 sum{
  x:"I"$"\t" vs x;
- small:x ind:first where 2={count where x}each 0=x mod/:x;
- big:x first except[where not x mod small;ind];
- big div small
+ sum q wsum (q<>1) & 0=mod[;1] q:x %/:\:x
  } each read0 `:input/day2.txt 
