@@ -51,17 +51,44 @@ with open('input/day2.txt') as fp:
         numlist.reverse()
         while len(numlist) > 0:
             firstNum = numlist.pop()
-            divisible = None
-            for i in numlist:
-                if i % firstNum == 0:
-                    divisible = i
-            if divisible is not None:
-                quotient = divisible / firstNum
-                divList.append(quotient)
-                break
+            for quotient, remainder in [divmod(ind,firstNum) for ind in numlist]:
+                if remainder == 0:
+                    divList.append(quotient)
+                    break
 printAnswer('Day2','Q2',sum(divList))
 
 
+# Q3
+input = 368078
+recordQ1=[(0,0)]  #a list to store the path
+recordQ2={(0,0):1}  #a dict to store value of each coordinate
+def get_spiral_coord(n):
+    '''
+    if n = 1 --> (1,0),(1,1),(0,1),(-1,1),(-1,0),(-1,-1),(0,-1),(1,-1)
+    '''
+    # entry point
+    yield n,1-n
+    # Move up (n*2-1 steps)
+    for up in range(1,n*2):
+        yield n, 1-n+up
+    # Move left (2n steps)
+    for left in range(1,n*2+1):
+        yield n-left,n
+    # Move down (2n steps)
+    for down in range (1,n*2+1):
+        yield -n,n-down
+    # Move right (2n steps)
+    for right in range (1,n*2+1):
+        yield -n+right,-n
 
+def main():
+    # Q1
+    layerQ1 = 1
+    while len(recordQ1) < input:
+        for x,y in get_spiral_coord(layerQ1):
+            recordQ1.append((x,y))
+        layerQ1+=1    
+    finalCoor = recordQ1[input-1]
+    printAnswer('Day3','Q1',abs(finalCoor[0])+abs(finalCoor[1]))
 
-
+main()
