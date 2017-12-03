@@ -81,6 +81,11 @@ def get_spiral_coord(n):
     for right in range (1,n*2+1):
         yield -n+right,-n
 
+NEIGHBOUR=list(get_spiral_coord(1))
+
+def get_neighbour_sum(xcoor,ycoor):
+    return sum ([recordQ2.get((xcoor+x,ycoor+y),0)for x,y in NEIGHBOUR])
+
 def main():
     # Q1
     layerQ1 = 1
@@ -90,5 +95,19 @@ def main():
         layerQ1+=1    
     finalCoor = recordQ1[input-1]
     printAnswer('Day3','Q1',abs(finalCoor[0])+abs(finalCoor[1]))
+    # Q2
+    layerQ2=1
+    answer=None
+    while recordQ2.values()[-1] < input:
+        for x,y in get_spiral_coord(layerQ2):
+            total = get_neighbour_sum(x,y)
+            recordQ2[(x,y)] = total
+            if total > input:
+                answer = total
+                break
+        layerQ2+=1
+        if answer is not None:
+            break
+    printAnswer('Day3','Q2',answer)
 
 main()
