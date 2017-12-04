@@ -30,10 +30,6 @@ sum abs (c,neg c:s div 2) + dir wsum 4#(d#(s-1)),r,3#0
 / a global dict to store coordinates' value
 record:(enlist(0;0))!enlist 1
 i:0
-while[input>last record;i+:1;allcoor:genCoor[i];{total:sumNear . x;record[x]:total}each allcoor]]]
-record record binr input  /answer
-
-
 / To generate all coordinates in the correct order of the ith layer 
 genCoor:{[i]
   ylen:1+2*i;
@@ -41,9 +37,12 @@ genCoor:{[i]
   1 rotate distinct (,/) neg scan (,/) {x:reverse x;{(y;x)}.' x} scan rightbound
   };
 / Given a coordinate, get the sum of all of its neighbour (only those already stored in record) - order of the route is important
-sumNear:{
-  x:x,(-1 1)+x;
-  y:y,(-1 1)+y;
-  co:1_raze x,/:\:y;
-  sum record@co
-  };
+sumNear:{sum record@(x,y)+/:genCoor[1]}
+while[input>last record;i+:1;allcoor:genCoor[i];{total:sumNear . x;record[x]:total}each allcoor]
+record record binr input  /answer
+
+/ day 4
+/ Q1
+sum{count[x]=count distinct x:" "vs x}each read0 `:input/day4.txt
+/ Q2
+sum{count[x]=count distinct asc@' x:" " vs x} each read0 `:input/day4.txt

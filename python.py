@@ -58,7 +58,7 @@ with open('input/day2.txt') as fp:
 printAnswer('Day2','Q2',sum(divList))
 
 
-# Q3
+# Day 3
 input = 368078
 recordQ1=[(0,0)]  #a list to store the path
 recordQ2={(0,0):1}  #a dict to store value of each coordinate
@@ -109,5 +109,25 @@ def main():
         if answer is not None:
             break
     printAnswer('Day3','Q2',answer)
+if __name__ == '__main__':
+    main()
 
-main()
+
+# Day4 
+def main():
+    validQ1=0
+    validQ2=0
+    with open('input/day4.txt') as fp:
+        for line in fp:
+            line=line.split()
+            if len(line) == len(set(line)):
+                validQ1+=1
+            sortedWord=[]
+            for word in line:
+                sortedWord.append(''.join(sorted(word)))
+            if len(sortedWord) == len(set(sortedWord)):
+                validQ2+=1
+    printAnswer('Day4','Q1',validQ1)
+    printAnswer('Day4','Q2',validQ2)
+if __name__ == '__main__':
+    main()
