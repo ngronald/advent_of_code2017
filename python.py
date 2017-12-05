@@ -86,7 +86,7 @@ NEIGHBOUR=list(get_spiral_coord(1))
 def get_neighbour_sum(xcoor,ycoor):
     return sum ([recordQ2.get((xcoor+x,ycoor+y),0)for x,y in NEIGHBOUR])
 
-def main():
+def mainDay3():
     # Q1
     layerQ1 = 1
     while len(recordQ1) < input:
@@ -110,11 +110,11 @@ def main():
             break
     printAnswer('Day3','Q2',answer)
 if __name__ == '__main__':
-    main()
+    mainDay3()
 
 
 # Day4 
-def main():
+def mainDay4():
     validQ1=0
     validQ2=0
     with open('input/day4.txt') as fp:
@@ -130,4 +130,30 @@ def main():
     printAnswer('Day4','Q1',validQ1)
     printAnswer('Day4','Q2',validQ2)
 if __name__ == '__main__':
-    main()
+    mainDay4()
+
+# Day5
+import copy
+def mainDay5():
+    with open('input/day5.txt') as fp:
+        num1 = [int(line) for line in fp]
+        num2 = copy.deepcopy(num1)
+        c1=c2=i1=i2=0
+        while i1 >=0 and i1 < len(num1):
+            oldi=i1
+            i1+=num1[i1]
+            num1[oldi]+=1
+            c1+=1
+        printAnswer('Day5','Q1',c1)
+        while i2>= 0 and i2 < len(num2):
+            oldi=i2
+            i2+=num2[i2]
+            if num2[oldi] < 3:
+                num2[oldi]+=1
+            else:
+                num2[oldi]-=1
+            c2+=1
+        printAnswer('Day5','Q2',c2)
+if __name__ == '__main__':
+    mainDay5()
+
