@@ -157,3 +157,25 @@ def mainDay5():
 if __name__ == '__main__':
     mainDay5()
 
+# Day 6
+import copy
+from collections import deque
+def mainDay6():
+    with open('input/day6.txt') as fp:
+        numList = [int(num) for num in fp.read().split('\t')]
+    record = []
+    count = len(numList)
+    while numList not in record:
+        record.append(numList)
+        maxIndex = numList.index(max(numList))
+        tmpList = copy.deepcopy(numList)
+        tmpList[maxIndex] = 0
+        remainder = numList[maxIndex] % count
+        remainderList = deque(([1] * remainder + [0] * count)[:count])
+        remainderList.rotate(1+maxIndex)
+        quotient = [numList[maxIndex] // count ] * count
+        numList = [sum(x) for x in zip(tmpList,quotient,remainderList)]
+    printAnswer('Day6','Q1',len(record))
+    printAnswer('Day6','Q2',len(record)-record.index(numList))
+if __name__ == '__main__':
+    mainDay6()

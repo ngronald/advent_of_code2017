@@ -46,10 +46,17 @@ record record binr input  /answer
 sum{count[x]=count distinct x:" "vs x}each read0 `:input/day4.txt
 / Q2
 sum{count[x]=count distinct asc@' x:" " vs x} each read0 `:input/day4.txt
-
+/
 / day 5
 a1:a2:"I"$read0 `:input/day5.txt;i1:i2:c1:c2:0;
 while[(i1>=0) and i1<count a1;oi:i1;i1+:a1[i1];a1[oi]:a1[oi]+1;c1+:1]
 while[(i2>=0) and i2<count a2;oi:i2;i2+:a2[i2];a2[oi]:a2[oi]+(-1 1)3>a2[oi];c2+:1]
-c1
-c2
+c1 /Q1
+c2 /Q2
+\
+/ day 6
+c:count input:"I"$"\t" vs first read0 `:input/day6.txt;r:()
+f:{r,:x;mi:(*)idesc x:(*)x;nx:@[x;mi;:;0];d:x[mi]mod c;enlist nx+(c#x[mi]div c)+neg[1+mi]rotate c##[d;1],c#0}
+a:f\[{(*)not in [x;r]}@;enlist input]
+count -1_a /Q1
+count[-1_a]-(*)r?last a /Q2
