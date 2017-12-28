@@ -60,3 +60,10 @@ f:{r,:x;mi:(*)idesc x:(*)x;nx:@[x;mi;:;0];d:x[mi]mod c;enlist nx+(c#x[mi]div c)+
 a:f\[{(*)not in [x;r]}@;enlist input]
 count -1_a /Q1
 count[-1_a]-(*)r?last a /Q2
+
+/ day 12
+dict:raze{x:get@'"<->"vs x;(enlist x 0)!enlist x 1} each read0 `:input/day12.txt
+f1:{(count x 1;distinct x[1],raze(where max@'dict in)@/:x[0]_x[1])}
+show first q1:f1/[{x[0]<> count x 1}@;(0;enlist 0)]
+f2:{nx:x[0],last f1/[{x[0]<> count x[1]}@;(0;enlist x[1])];(nx;first key[dict]except nx)}
+show q2:count 1_f2\[{count[dict]<>count x 0};(();0)]

@@ -8,8 +8,8 @@ def printAnswer(day, question, answer):
 from collections import deque
 
 with open('input/day1.txt') as fp:
-    str = fp.read()
-numlist = [int(num) for num in str]
+    string = fp.read()
+numlist = [int(num) for num in string]
 items = deque(numlist)
 items.rotate(1)
 sumlist = [numlist[i] for i in xrange(len(items)) if items[i] == numlist[i] ]
@@ -131,7 +131,7 @@ def mainDay4():
     printAnswer('Day4','Q2',validQ2)
 if __name__ == '__main__':
     mainDay4()
-
+'''
 # Day5
 import copy
 def mainDay5():
@@ -156,7 +156,7 @@ def mainDay5():
         printAnswer('Day5','Q2',c2)
 if __name__ == '__main__':
     mainDay5()
-
+'''
 # Day 6
 import copy
 from collections import deque
@@ -179,3 +179,151 @@ def mainDay6():
     printAnswer('Day6','Q2',len(record)-record.index(numList))
 if __name__ == '__main__':
     mainDay6()
+
+# Day 8
+import operator
+class RegisterRecord(object):
+    
+    def __init__(self,file):
+        self.record = dict()
+        self.file = file
+        self.maxValue = None
+
+    def read_file(self):
+        with open(self.file) as fp:
+            for line in fp:
+                line = line.rstrip().split(' ')
+                yield line
+
+    def parse_each_line(self,line):
+        condVal = str(self.record.get(line[4],0))
+        condition = " ".join([condVal]+line[-2:])
+        if self.eval_condition(condition):
+            if line[1] == 'inc':
+                operation = operator.add
+            else:
+                operation = operator.sub
+            register = line[0]
+            value = int(line[2])
+            self.update_record(register,value,operation)
+        # update the maxValue after parsing each line
+        self.update_maxValue()
+
+    def eval_condition(self,conditionStr):
+        return eval(conditionStr)   
+    
+    def update_record(self,register,chgValue,op):
+        registerValue = self.record.get(register,0)
+        self.record[register] = op(registerValue,chgValue)
+
+    def get_max_register(self):
+        return max(self.record.iterkeys(), key= lambda element: self.record[element])
+
+    def get_max_value(self):
+        return max(self.record.values())
+
+    def update_maxValue(self):
+        currMax = self.get_max_value()
+        if currMax > self.maxValue:
+            self.maxValue = currMax
+
+if __name__ == '__main__':
+    record = RegisterRecord('input/day8.txt')
+    for line in record.read_file():
+        record.parse_each_line(line)
+    maxValueQ1 = record.get_max_value()
+    printAnswer('Day8','Q1',str(maxValueQ1))
+    maxValueQ2 = record.maxValue
+    printAnswer('Day8','Q2',str(maxValueQ2))
+
+# Day 9
+class ProcessStream(object):
+    def __init__(self,file):
+        with open(file) as fp:
+            self.stream = fp.read().rstrip()
+        self.trash_storage = list()
+        self.group_storage = list()
+
+    def start(self):
+        self.remove_bang()
+        self.extract_group()
+
+    def remove_bang(self):
+        index = self.find_bang()
+        self.stream = ''.join([self.stream[i] for i in range(len(self.stream)) if not i in index])
+
+    def find_bang(self):
+        index = [pos for pos,val in enumerate(self.stream) if val == '!']
+        diff = [j-i for i,j in zip(index[:-1],index[1:])] + [0]
+        for i in range(len(index)):
+            if diff[i]==1 and index[i] is not None:
+                index[i+1] = None
+        index = [i for i in index if i is not None]
+        index = index + [i+1 for i in index]
+        index.sort()
+        return index
+
+    def extract_group(self):
+        isTrash = False
+        for chr in self.stream:
+            if chr == '<' and not isTrash:
+                isTrash = True
+            elif chr == '>':
+                isTrash = False
+            elif chr in '{}' and not isTrash:
+                self.group_storage.append(chr)
+            elif isTrash:
+                self.trash_storage.append(chr)
+
+    def compute_score(self):
+        tmplist = []
+        score = 0
+        for bracket in self.group_storage:
+            if bracket == '{':
+                tmplist.append(bracket)
+            else:
+                depth = len(tmplist)
+                score += depth
+                tmp = tmplist.pop()
+        return score
+
+    def count_trash(self):
+        return len(self.trash_storage)
+
+if __name__=='__main__':
+    day9 = ProcessStream('input/day9.txt')
+    day9.start()
+    printAnswer('Day9','Q1',str(day9.compute_score()))
+    printAnswer('Day9','Q2',str(day9.count_trash()))
+
+# Day 11
+def genSteps():
+    with open('input/day11.txt') as fp:
+        route = fp.read().rstrip().split(',')
+    for step in route:
+        yield step
+
+def calcDist(stepDict):
+    newCoor = {'n':[1,0,0],'s':[-1,0,0],'ne':[0,0,1],'nw':[0,-1,0],'sw':[0,0,-1],'se':[0,1,0]}
+    total = [0,0,0]
+    for key in stepDict.iterkeys():
+        for i in range(3):
+            total[i]+=newCoor[key][i]*stepDict[key]
+    # total[0] -> north south plus min(total[1],total[2]) -> 'nw' + 'ne' = 'n'  plus total[1]-min(total[1],total[2]) + total[2]-min(total[1],total[2]) -> remaining steps
+    totalstep = sum(total) - min(total[1],total[2])
+    return totalstep
+
+def mainDay11():
+    steps = {'nw':0,'n':0,'ne':0,'se':0,'s':0,'sw':0}
+    generateSteps = genSteps()
+    maxStep = 0
+    for step in generateSteps:
+        steps[step]+=1
+        distance = calcDist(steps)
+        if distance > maxStep:
+            maxStep = distance
+    shortestDist = calcDist(steps)
+    printAnswer('Day11','Q1',shortestDist)
+    printAnswer('Day11','Q2',maxStep)
+if __name__ == '__main__':
+    mainDay11()
